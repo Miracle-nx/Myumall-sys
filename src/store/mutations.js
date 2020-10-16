@@ -8,11 +8,23 @@ export const state = {
 };
 export const mutations = {
     changeUserInfo(state,info){
-        state.userInfo=info;
-        console.log(info);//存上了
+        state.userInfo=info;   //存上了
+        console.log(info);
+        //====================登录=======================
         // 数据传过来了,为了不刷新就没有 就
         // sessionStorage.setItem("userInfo",user)//[object,object] 一个对象寸进去就是变成字符串 但是这样只拿到一个字符串
            sessionStorage.setItem("userInfo",JSON.stringify(info));
+        //===================退出登录=====================
+        // 传一个空对象代替掉原vuex里面的数据---然后判断标识判断操作退出登录,
+        if(info.id){
+            // 是登录
+            sessionStorage.setItem("userInfo",JSON.stringify(info));
+
+        }else{
+            // 是删除
+            sessionStorage.removeItem("userInfo");
+        }
+
     }
 };
 export const getters = {

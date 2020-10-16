@@ -1,6 +1,9 @@
 import axios from 'axios';
 import qs from 'qs';
 import Vue from "vue";
+import router from '../router/index';
+import store from "../store";
+import {successAlert,warningAlert} from "../utils/alert";
 
 // 开发环境下使用 需要配置图片的前置路径
 Vue.prototype.$imgPre="http://localhost:3000";
@@ -12,17 +15,30 @@ let baseUrl ="/api";
 
 // 当只传一个参数的时候 一定要记得用json格式包裹起来{ id:id}
 // 当传多个参数的时候re
-//响应拦截
+
+//响应拦截,
 axios.interceptors.response.use((res) => {
   console.group("====请求路径====="+res.config.url)
   console.log(res)
   console.groupEnd();
+  // 测试token
+  // if(res.config.url=验证登录过期=baseUrl+"/api/menulist"){
+  //   res.data.msg="登录已过期或范文权限受限"
+  // }
+  if(res.data.msg=="登录已过期或访问权限受限"){
+    // 让用户去登录
+    // y引入路由对象
+    warningAlert(res.data.msg)
+    router.push("/login");
+  }
   return res;
 })
-//请求拦截
+//请求拦截----携带请求头去请求数据
 axios.interceptors.request.use((config) => {
-  // if(config.url)!='login'){
-//   config.headers.token = localStorage.getItem('token');
+  if(config.url!=baseUrl+'/api/login'){
+    // 这个字段是验证登录过期，token里面有时间戳 是一个小时掉线！走请求 后端就会返掉线----只要掉线了 后端告诉我们 我们就要验证有没有掉线告诉用户
+  config.headers.authorization = store.state.userInfo.token;
+};
   return config;
 })
 // 管理员登录接口
@@ -332,11 +348,11 @@ export const reqGoodsList = (params) => {
 }
 
 //详情 params={id:'1'}
-export const reqGoodsDetail = (params) => {
+export const reqGoodsDetail = (id) => {
   return axios({
       url: baseUrl + "/api/goodsinfo",
       method: "get",
-      params: params
+      params: {id:id}
   })
 }
 //修改
@@ -352,10 +368,10 @@ export const reqGoodsUpdate = (form) => {
   })
 }
 //删除 params={id:'1'}
-export const reqGoodsDel = (params) => {
+export const reqGoodsDel = (id) => {
   return axios({
       url: baseUrl + "/api/goodsdelete",
       method: "post",
-      data: qs.stringify(params)
+      data: qs.stringify({id:id})
   })
 }

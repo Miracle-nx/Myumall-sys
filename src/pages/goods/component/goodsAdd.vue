@@ -3,7 +3,7 @@
     <el-dialog
       :title="info.isadd ? '添加商品' : '编辑商品'"
       :visible.sync="info.isshow"
-       @opened="opened"
+      @opened="opened"
     >
       <el-form :model="form" label-width="80px">
         <!-- 再form 里面给label 一个统一的宽 -->
@@ -42,7 +42,7 @@
         <el-form-item label="价格">
           <el-input v-model="form.price" autocomplete="off"></el-input>
         </el-form-item>
-          <el-form-item label="市场价格">
+        <el-form-item label="市场价格">
           <el-input v-model="form.market_price" autocomplete="off"></el-input>
         </el-form-item>
         <!-- 图片 -->
@@ -64,8 +64,7 @@
             placeholder="请选择活动区域"
             @change="specchange()"
           >
-            <el-option label="----请选择---" 
-            value="" disabled></el-option>
+            <el-option label="----请选择---" value="" disabled></el-option>
             <el-option
               v-for="item in specslist"
               :key="item.id"
@@ -111,7 +110,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel()">取 消</el-button>
-        <el-button type="primary" @click="add()">确 定</el-button>
+        <el-button type="primary" @click="add()" v-if="info.isadd">确 定</el-button>
+        <el-button type="primary" @click="update()" v-else>修改</el-button>
       </div>
     </el-dialog>
   </div>
@@ -119,7 +119,13 @@
 <script>
 import E from "wangeditor";
 import { mapGetters, mapActions } from "vuex";
-import { reqcatelist, reqGoodsAdd, reqGoodsDel } from "../../../utils/request";
+import {
+  reqcatelist,
+  reqGoodsAdd,
+  reqGoodsDel,
+  reqGoodsDetail,
+  reqGoodsUpdate
+} from "../../../utils/request";
 import { successAlert, warningAlert } from "../../../utils/alert";
 
 export default {
@@ -139,18 +145,18 @@ export default {
         specsattr: [], //后端要的 '[]',所以 记得在请求前 转换格式
         isnew: 1,
         ishot: 1,
-        status: 1,
+        status: 1
       },
       //二级分类的list和商品属性的list都不是直接赋值的需要请求的
       secondList: [],
-      goodsAttrList: [],//前端要的是一个数组
-      imgUrl: "", //图片地址
+      goodsAttrList: [], //前端要的是一个数组
+      imgUrl: "" //图片地址
     };
   },
   computed: {
     ...mapGetters({
       catelist: "cate/list",
-      specslist: "specs/list",
+      specslist: "specs/list"
       // 商品列表不需要
     })
   },
@@ -160,16 +166,15 @@ export default {
       reqCatelist: "cate/reqListAction",
       reqspecslist: "specs/reqListAction",
       // 又要请求商品列表+商品总数 (分页的情况下) 两个同时刷新
-      reqTotalAction:"goods/reqTotalAction",
-      reqListAction:"goods/reqListAction",
+      reqTotalAction: "goods/reqTotalAction",
+      reqListAction: "goods/reqListAction"
     }),
     //弹框打开完成
-    opened(){
-      this.editor=new E("#editor");//编辑完成之后再赋值
+    opened() {
+      this.editor = new E("#editor"); //编辑完成之后再赋值
       this.editor.create();
-      // 赋值也是
+      // 赋值也是弹框打开的之后再赋值
       this.editor.txt.html(this.form.description);
-      
     },
     // 图片
     getfile(e) {
@@ -203,50 +208,61 @@ export default {
       // let obj = this.specslist.find((item) => item.id == this.form.specsid);
 
       // this.goodsAttrList = obj.attrs;
-       let obj = this.specslist.find((item) => item.id == this.form.specsid);
+      let obj = this.specslist.find(item => item.id == this.form.specsid);
       // 把这条数据的attrs赋值给goodsAttrList;
-      this.goodsAttrList = JSON.parse(obj.attrs);//["510升", "480升", "328升", __ob__: Observer]0: "510升"1: "480升"2: "328升"
-      console.log(this.goodsAttrList,"goodsAttrList");
+      this.goodsAttrList = JSON.parse(obj.attrs); //["510升", "480升", "328升", __ob__: Observer]0: "510升"1: "480升"2: "328升"
+      console.log(this.goodsAttrList, "goodsAttrList");
       //["["G3X"", ""G5X"", ""G5X mark"]", __ob__: Observer]"字符串数字转数组
       //把商品规格里面那条数据里面的attrs找到赋给我的属性list
- //把商品规格里面那条数据里面的attrs找到赋给我的属性list
+      //把商品规格里面那条数据里面的attrs找到赋给我的属性list
       // console.log(this.goodsAttrList, "goodattr");
       //["G3X", "G5X", "G5X mark", __ob__: Observer]
     },
     cancel() {
       this.info.isshow = false;
     },
+    // 添加
     add() {
-     
-      // 1、我的后端是数组？？
-      // let data = {
-      //   ...this.form,
-      //   specsattr: JSON.stringify(this.form.specsattr),
-      // };
-
-
-      let data={
-          ...this.form,
-          specsattr:JSON.stringify(this.form.specsattr)
+      let data = {
+        ...this.form,
+        specsattr: JSON.stringify(this.form.specsattr)
       };
-      console.log(data,"data");
+      console.log(data, "data");
       console.log(this.form, "this.form");
-      
+
       reqGoodsAdd(data).then(res => {
         console.log(res);
         if (res.data.code == 200) {
-            successAlert(res.data.msg);
-             this.info.isshow = false;
-           this.reqTotalAction();
-           this.reqListAction();
-
-        }else{
-            warningAlert(res.data.msg);
+          successAlert(res.data.msg);
+          this.info.isshow = false;
+          this.reqTotalAction();
+          this.reqListAction();
+        } else {
+          warningAlert(res.data.msg);
         }
       });
-    }
-  },
+    },
+    // 查看一条数据信息并赋值
+    look(id) {
+      reqGoodsDetail(id).then(res => {
+        console.log(res.data.msg);
+        this.form=res.data.list;
+        this.form.id=id;
+        // 保留编辑的那条的id
+        // 二级分类和商品属性上不去
+        this.getSecond();
+        console.log(this.form,"FORM");//"["15L","30L","45L"]"
+        this.form.specsattr=JSON.parse(this.form.specsattr);
+        //图片跟form没关系
+        this.imgUrl=this.$imgPre+this.form.img;//imgPre已经挂在原型上了
+      });
+    },
+    update(){
+      console.log(this.form,"edtor");
+          reqGoodsUpdate(ths.form);
 
+    },
+  },
   mounted() {
     if (this.catelist.length == 0) {
       this.reqCatelist();
@@ -254,15 +270,6 @@ export default {
     this.reqspecslist(false); //商品规格不是分页的
   }
 };
-// mounted() {
-//     //如果商品一级分类没有请求过，就请求一次
-//     if (this.cateList.length == 0) {
-//       this.reqCateList();
-//     }
-
-//     //由于商品规格模块使用了分页，但是商品管理模块需要所有的商品规格，不要分页，所以多传递一个参数，用来判断是否需要分页
-//     this.reqSpecsList(true);
-//   },
 </script>
 <style scoped>
 .avatar-uploader .el-upload {

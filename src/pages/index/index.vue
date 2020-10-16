@@ -67,7 +67,7 @@
         <!-- 头部 -->
         <el-header class="head"
           >Header
-          <el-button type="primary" class="exit">退出</el-button>
+          <el-button type="primary" class="exit" @click="exit">退出</el-button>
         </el-header>
         <el-main class="main">
           <h2></h2>
@@ -97,9 +97,16 @@ export default {
     })
   },
   methods: {
-    ...mapActions({
-      // userInfo
-    })
+    ...mapActions({//==============退出登录==============
+       // 退出登录的时候要把vuex和本地存储删除传一个空对象来标识一下
+      changeUserInfoAction:"changeUserInfoAction"
+    }),
+    exit(){
+      //一、退出登录=====//传空对象就直接清掉vuex里面的内容
+      this.changeUserInfoAction({});
+      // 跳到登录
+      this.$router.push("/login");
+    }
   }
 };
 </script>

@@ -36,6 +36,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+     
       // userInfo:"userInfo"登录要做的是存数据 不是取数据
     })
   },

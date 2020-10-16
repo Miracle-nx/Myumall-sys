@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrap">
      <el-table
       :data="goodslist"
       style="width: 100%; margin-bottom: 20px"
@@ -38,7 +38,7 @@
       <el-table-column prop="status" label="操作"  sortable width="180">
         <template slot-scope="scope">
           <el-button  @click="edit(scope.row.id)">编辑</el-button>
-          <del-btn class="del" @confirm="dele(scope.row.id)"></del-btn>
+          <del-btn class="del" @delete="dele(scope.row.id)"></del-btn>
         </template>
       </el-table-column>
     </el-table>
@@ -54,6 +54,8 @@
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
+import { successAlert, warningAlert } from '../../../utils/alert';
+import {reqGoodsDel} from "../../../utils/request"
 export default {
   props: [],
   components: {},
@@ -73,9 +75,24 @@ export default {
         reqTotalAction:"goods/reqTotalAction",
         changePageAction:"goods/changePageAction"
     }),
-    // changePage(){
-    //   // console.
-    // }
+    // 删除
+    dele(id){
+      reqGoodsDel(id).then(res=>{
+        console.log(res.data.msg)
+        if(res.data.code==200){
+          successAlert(res.data.msg)
+        }else{
+          warningAlert(res.data.msg)
+        }
+       
+      })
+      // 
+    },
+    // 编辑：
+    edit(id){
+      this.$emit("edit",id)
+      
+    }
   },
   mounted() {
       this.reqListAction();
@@ -83,4 +100,8 @@ export default {
   }
 };
 </script>
-<style scoped></style>
+<style scoped>
+.wrap img{
+  width: 80%;
+  height: 80%;
+}</style>

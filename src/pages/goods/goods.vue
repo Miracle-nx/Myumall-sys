@@ -3,7 +3,7 @@
     <el-button @click="willadd()">添加</el-button>
     <goods-add :info="info" ref="add"></goods-add>
     <!-- <good-list @edit="edit()"></good-list> -->
-    <goods-list></goods-list>
+    <goods-list @edit="edit"></goods-list>
   </div>
 </template>
 <script>
@@ -30,12 +30,14 @@ export default {
       // 将要添加了
       this.info.isshow = true;
       this.info.isadd = true;
-    }
+    },
     // // 通知add编辑
-    // edit(id){
-    //   this.$refs.add.look(id);
-    //   this.info.isadd=false;
-    // }
+    edit(id){
+      // this.$refs.add.look(id);
+      this.$refs.add.look(id);
+      this.info.isadd=false;
+      this.info.isshow=true;
+    }
   },
   mounted() {}
 };
