@@ -2,7 +2,7 @@
 
 > A Vue.js project
 ## process
-  unfinished：会员管理、轮播管理、会员管理、秒杀管理
+  unfinished：正则  管理员管理bug多
 
 
 
