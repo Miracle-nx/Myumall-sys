@@ -1,26 +1,28 @@
-import {reqMenuList} from "../../utils/request";
+import {
+  reqmemberlist
+} from "../../utils/request";
 // 清儒axios 都需要用括号引入
 const state = {
-    list:[],
+  list: [],
 }
 const mutations = {
   // 修改list
-  changeMenu(state,arr){
-    state.list=arr;
+  changeMenu(state, arr) {
+    state.list = arr;
   }
 }
 const actions = {
-  RreqMenuList(context){
+  reqListAction(context) {
     // 发request.js请求
-    reqMenuList().then(res=>{
-      console.log(res);
-      context.commit("changeMenu",res.data.list)
+    reqmemberlist().then(res => {
+      console.log(res,"member");
+      context.commit("changeMenu", res.data.list);
     })
 
   }
 }
 const getters = {
-  list(state){
+  list(state) {
     return state.list
   }
 }

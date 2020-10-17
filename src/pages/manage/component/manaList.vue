@@ -25,7 +25,9 @@
 
       <el-table-column prop="address" label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" @click="editCall(scope.row.uid)"
+          {{scope.row.uid}}
+          {{scope.row.id}}
+          <el-button type="primary" @click="edit(scope.row.uid)"
             >编辑</el-button
           >
           <!-- 删除的时候用的是uid -->
@@ -100,9 +102,8 @@ export default {
       });
     },
     // 编辑的时候 在list列表 emit 父亲的编辑弹框出来在add里面请求编辑的修改接口
-    editCall(id) {
-      // 最好不要跟html的徐娜人呐id一样 不然会混淆
-      // 子传父 自定义事件edit
+    edit(id) {
+      console.log(id,"listuid")
       this.$emit("edit", id);
       // 要删除一条告诉add的look
     }

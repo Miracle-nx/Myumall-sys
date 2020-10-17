@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrap">
     <el-table
       :data="list"
       style="width: 100%;margin-bottom: 20px;"
@@ -7,29 +7,13 @@
       border
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     >
-      <!--  :tree-props:table 子tree上面的数据-->
-      <!-- default-expand-all 默认展开全部children -->
-      <!-- prop的哪个item prop="" 相当于 item. -->
-      <el-table-column
-        prop="id"
-        label="菜单编号"
-        sortable
-        width="180"
-      ></el-table-column>
       <el-table-column
         prop="title"
-        label="菜单名称"
+        label="活动名称"
         sortable
         width="180"
-      ></el-table-column>
-
-      <el-table-column prop="icon" label="菜单图标" sortable width="180">
-        <template slot-scope="scope">
-          <!-- scope.row就是每一项 -->
-          <i :class="scope.row.icon"></i>
-        </template>
+      >
       </el-table-column>
-      <el-table-column prop="url" label="菜单地址"> </el-table-column>
       <!-- 状态展示的是开启和关闭 -->
       <el-table-column label="状态">
         <template slot-scope="scope">
@@ -45,8 +29,7 @@
           <!-- {{scope.row}} -->
           <!-- {{scope.row.id}} -->
           <el-button @click="edit(scope.row.id)">编辑</el-button>
-          <el-button type="primary" @click="del(scope.row.id)">删除</el-button>
-          <del-btn @delete="dele(scope.row.id)">删除</del-btn>
+          <del-btn @delete="dele(scope.row.id)" class="del">删除</del-btn>
         </template>
       </el-table-column>
     </el-table>
@@ -54,7 +37,7 @@
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { reqMenuDel } from "../../../utils/request";
+import { reqseckdelete } from "../../../utils/request";
 import { warningAlert, successAlert } from "../../../utils/alert";
 
 export default {
@@ -65,44 +48,22 @@ export default {
   },
   computed: {
     ...mapGetters({
-      list: "menu/list"
+      list: "seckill/list"
     })
   },
   methods: {
     ...mapActions({
-      RreqMenuList: "menu/RreqMenuList"
+      reqListAction: "seckill/reqListAction"
     }),
-    // 删除-my
-    del(id) {
-      this.$confirm("此操作将永久删除, 是否继续?", "提示", {
-        confirmButtonText: "删除",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(res => {
-          reqMenuDel(id).then(e => {
-            console.log(e);
-            if (e.data.code == 200) {
-              successAlert(e.data.msg);
-              this.RreqMenuList();
-            } else {
-              warningAlert(e.data.mgs);
-            }
-          });
-        })
-        .catch(res => {});
-      // );
-    },
     // 删除--公共组件
     dele(id) {
       // 自定义事件的名字不可以和事件名称一样！!!!
-      console.log(111);
       // 将要删除成功要做的事件
-      reqMenuDel(id).then(e => {
-        console.log(e);
+      reqseckdelete(id).then(e => {
+        console.log(id);
         if (e.data.code == 200) {
           successAlert(e.data.msg);
-          this.RreqMenuList();
+          this.reqListAction();
         } else {
           warningAlert(e.data.mgs);
         }
@@ -120,7 +81,7 @@ export default {
   },
   mounted() {
     // 一进来就传一个id
-    this.RreqMenuList();
+    this.reqListAction();
   }
 };
 </script>

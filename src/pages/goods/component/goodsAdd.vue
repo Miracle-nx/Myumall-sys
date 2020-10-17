@@ -1,10 +1,13 @@
 <template>
   <div>
+    <!-- 对话框关闭和打开的时候逻辑方法 -->
     <el-dialog
       :title="info.isadd ? '添加商品' : '编辑商品'"
       :visible.sync="info.isshow"
       @opened="opened"
+      @closed="close"
     >
+      <!-- 对话框关闭和打开的时候逻辑方法 -->
       <el-form :model="form" label-width="80px">
         <!-- 再form 里面给label 一个统一的宽 -->
 
@@ -110,7 +113,9 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel()">取 消</el-button>
-        <el-button type="primary" @click="add()" v-if="info.isadd">确 定</el-button>
+        <el-button type="primary" @click="add()" v-if="info.isadd"
+          >确 定</el-button
+        >
         <el-button type="primary" @click="update()" v-else>修改</el-button>
       </div>
     </el-dialog>
@@ -235,6 +240,10 @@ export default {
         if (res.data.code == 200) {
           successAlert(res.data.msg);
           this.info.isshow = false;
+
+          // 添加成功后
+          this.cancel();
+          this.empty();
           this.reqTotalAction();
           this.reqListAction();
         } else {
@@ -246,22 +255,68 @@ export default {
     look(id) {
       reqGoodsDetail(id).then(res => {
         console.log(res.data.msg);
-        this.form=res.data.list;
-        this.form.id=id;
+        // this.form.specsattr=JSON.parse(res.data.list.specsattr)
+        this.form = res.data.list;
+        this.form.id = id;
         // 保留编辑的那条的id
         // 二级分类和商品属性上不去
         this.getSecond();
-        console.log(this.form,"FORM");//"["15L","30L","45L"]"
-        this.form.specsattr=JSON.parse(this.form.specsattr);
+        this.form.specsattr = JSON.parse(this.form.specsattr);
+        console.log(this.form, "FORM"); //"["15L","30L","45L"]"
+
         //图片跟form没关系
-        this.imgUrl=this.$imgPre+this.form.img;//imgPre已经挂在原型上了
+        this.imgUrl = this.$imgPre + this.form.img; //imgPre已经挂在原型上了
       });
     },
-    update(){
-      console.log(this.form,"edtor");
-          reqGoodsUpdate(ths.form);
-
+    update() {
+      // 直接修改form的值不好
+      this.form.description = this.editor.txt.html(); //取值
+      let data = {
+        ...this.form,
+        specsattr: JSON.stringify(this.form.specsattr)
+      };
+      console.log(data, "edtor");
+      reqGoodsUpdate(data).then(res => {
+        console.log(res.data.code, "11111");
+        if (res.data.code == 200) {
+          successAlert(res.data.msg);
+          this.empty();
+          this.cancel();
+          this.reqListAction();
+        } else {
+          warningAlert();
+        }
+      });
     },
+    empty() {
+      (this.form = {
+        first_cateid: "",
+        second_cateid: "",
+        goodsname: "",
+        price: "",
+        market_price: "",
+        img: null,
+        description: "111",
+        specsid: "",
+        specsattr: [], //后端要的 '[]',所以 记得在请求前 转换格式
+        isnew: 1,
+        ishot: 1,
+        status: 1
+      }),
+        //二级分类的list和商品属性的list都不是直接赋值的需要请求的
+        (this.secondList = []),
+        (this.goodsAttrList = []), //前端要的是一个数组
+        (this.imgUrl = ""); //图片地址
+    },
+    close() {
+      // 弹框非修改数据和添加数据，而是点击取消或大屏小时弹框的时候就要清空编辑时候的数据
+      // -----如果不清空的话 那么数据还会留在添加上面
+      if(!this.info.isAdd){
+        this.empty();
+
+      }
+      // 关闭的时候
+    }
   },
   mounted() {
     if (this.catelist.length == 0) {

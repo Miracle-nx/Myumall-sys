@@ -82,7 +82,7 @@ export var indexRoutes = [
     component: () => import("../pages/seckill/seckill.vue"),
     name: "秒杀管理",
     beforeEnter(to, from, next) {
-      checkEnter('/speckill', next); //两个参数 一个入了和一个next函数
+      checkEnter('/seckill', next); //两个参数 一个入了和一个next函数
     }
   }, {
     path: "specs",

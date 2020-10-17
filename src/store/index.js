@@ -10,6 +10,9 @@ import user from "./modules/manage";
 import cate from "./modules/cate";
 import specs from "./modules/specs";
 import goods from "./modules/goods";
+import member from "./modules/member";
+import seckill from "./modules/seckill";
+import banner from "./modules/banner";
 Vue.use(Vuex);
 export default new Vuex.Store({
   state,
@@ -17,6 +20,6 @@ export default new Vuex.Store({
   actions,
   getters,
   modules : {
-    menu,role,user,cate,specs,goods
+    menu,role,user,cate,specs,goods,member,seckill,banner
   }
 })

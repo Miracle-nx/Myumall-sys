@@ -17,6 +17,7 @@ const mutations = {
   // 修改列表
   changeList(state, arr) {
     state.list = arr;
+    console.log(state.list,"listuser")
   },
   // 修改总数
   changeTotal(state, num) {
@@ -50,7 +51,7 @@ const actions = {
   reqTotalAction(context) {
     requsercount().then(res => {
       console.log(res, "total");
-      context.commit("changeTotal", 10);
+      context.commit("changeTotal", res.data.list[0].total);
     })
 
   },

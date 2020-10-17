@@ -3,6 +3,7 @@
     <el-dialog
       :title="info.isadd ? '管理员添加' : '管理员编辑'"
       :visible.sync="info.isshow"
+      @closed="close"
     >
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="所属角色">
@@ -88,12 +89,11 @@ export default {
   methods: {
     ...mapActions({
       RolereqListAction: "role/reqListAction",
-      UsereqListAction: "user/reqListAction"
+      UsereqListAction: "user/reqListAction",
+      UserTotal:"user/reqTotalAction",
     }),
     // 请求添加接口
     add() {
-      this.info.isshow = false;
-      this.info.isadd = true;
       console.log(111);
       requseradd(this.form).then(res => {
         console.log(res, "adduser");
@@ -108,6 +108,13 @@ export default {
       });
     },
     //
+    // 当点击的非修改或添加的清空下弹框消失
+    close(){
+      // 编辑----消失弹框的时候 要清空数据
+      if(!this.info.isadd){
+        this.empty();
+      }
+    },
     cancel() {
       this.info.isshow = false;
     },
@@ -126,26 +133,31 @@ export default {
     },
     //look()函数  调用只读状态的一条数据
     look(id) {
+
       // list点击编辑的时候 父组件直接调用$ref.add().look(id)调用了 无需绑定
       requserinfo(id).then(res => {
-        console.log(res.data.code);
+        if(res.data.code==200){
+           console.log(res.data.code);
         this.form = res.data.list;
         this.form.uid = id;
-        //  因为form里面mif
-        //  form被赋值饿了
-        // 再走修改
+        this.cancel();
+        this.empty();
+        successAlert(res.data.msg);
+        }else{
+        warningAlert(res.data.msg);
+        }
+       
       });
     },
     // 编辑update
     edit() {
-      this.info.isshow = true;
-      this.info.isadd = false;
       // 点击修改  走修改请求
       requseredit(this.form).then(res => {
         if (res.data.code == 200) {
           successAlert(res.data.msg);
           // 刷新user列表
           this.UsereqListAction();
+          this.UserTotal();
           this.empty();
           this.cancel();
         } else {
