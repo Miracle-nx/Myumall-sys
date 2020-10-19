@@ -132,17 +132,14 @@ export default {
       // 成功要做的是事情
     },
     //look()函数  调用只读状态的一条数据
-    look(id) {
-
+    look(uid) {
       // list点击编辑的时候 父组件直接调用$ref.add().look(id)调用了 无需绑定
-      requserinfo(id).then(res => {
+      requserinfo(uid).then(res => {
         if(res.data.code==200){
-           console.log(res.data.code);
-        this.form = res.data.list;
-        this.form.uid = id;
-        this.cancel();
-        this.empty();
-        successAlert(res.data.msg);
+          console.log(res)
+          successAlert(res.data.msg);
+          this.form = res.data.list;
+          this.form.password="";
         }else{
         warningAlert(res.data.msg);
         }

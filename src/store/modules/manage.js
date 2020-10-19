@@ -28,8 +28,6 @@ const mutations = {
     state.page=page;
   }
 
-
-
 }
 const actions = {
   // 1、获取manage列表的list数据

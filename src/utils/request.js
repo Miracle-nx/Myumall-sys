@@ -185,7 +185,7 @@ export const requserinfo = (uid) => {
     url: baseUrl + '/api/userinfo',
     method: 'get',
     params: {
-      id: uid
+      uid: uid
     }
   })
 }

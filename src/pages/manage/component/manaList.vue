@@ -25,8 +25,6 @@
 
       <el-table-column prop="address" label="操作">
         <template slot-scope="scope">
-          {{scope.row.uid}}
-          {{scope.row.id}}
           <el-button type="primary" @click="edit(scope.row.uid)"
             >编辑</el-button
           >
@@ -103,7 +101,6 @@ export default {
     },
     // 编辑的时候 在list列表 emit 父亲的编辑弹框出来在add里面请求编辑的修改接口
     edit(id) {
-      console.log(id,"listuid")
       this.$emit("edit", id);
       // 要删除一条告诉add的look
     }

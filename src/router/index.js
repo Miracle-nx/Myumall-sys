@@ -120,10 +120,6 @@ let router = new Router({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   next();
-// })
-
 // 2、登录拦截 导出路由对象
 router.beforeEach((to, from, next) => {
   // 当前往的是登录

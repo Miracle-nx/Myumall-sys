@@ -2,7 +2,7 @@
 
 > A Vue.js project
 ## process
-  unfinished：正则  管理员管理bug多
+  unfinished：正则  
 
 
 

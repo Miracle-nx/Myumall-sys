@@ -214,18 +214,21 @@ export default {
       console.log(id);
       // look方法把id为id的这条数据渲染到form上面 做数据请求
       reqseckinfo(id).then(res => {
-        // 不会转
         if (res.data.code == 200) {
           this.form={
             ...res.data.list,
-           
+            begintime:new Date(Number(res.data.list.begintime)),
+            endtime:new Date(Number(res.data.list.endtime))
           }
+          this.value1=[this.form.begintime,this.form.endtime]
+           
+          //this.value1.push(this.form.begintime,this.form.endtime)
+
+
           // var b=new Date(parseInt(this.form.begintime));
           // var e=new Date(parseInt(this.form.endtime));
           // console.log(b,e,"b")
           this.form.id=id;
-          this.value1.push(new Date(parseInt(this.form.begintime)));
-          this.value1.push(new Date(parseInt(this.form.endtime)));
           console.log(this.form,"form");
           console.log(this.value1,"value");
 

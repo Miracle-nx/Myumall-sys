@@ -14,8 +14,8 @@
       </el-table-column>
       <el-table-column prop="catename" label="分类名称" sortable width="180">
       </el-table-column>
-      <el-table-column prop="img" label="图片">
-        <template slot-scope="scope">
+      <el-table-column prop="img" label="图片" >
+        <template slot-scope="scope" v-if="scope.row.img != 'null' ">
           <!-- {{scope.row}} -->
           <!-- 展示的时候的地址 是向后端请求过来的数据就要跨域 -->
           <img :src="$imgPre + scope.row.img" alt="" />

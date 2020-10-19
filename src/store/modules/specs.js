@@ -44,7 +44,7 @@ const actions = {
     reqspecscount().then(res => {
       console.log("count", res);
       let t = res.data.list[0].total;
-      context.commit("changetotal", t)
+      context.commit("changetotal",res.data.list[0].total)
     })
   },
   // 3、组件修改页码的时候只要把页码传过来 

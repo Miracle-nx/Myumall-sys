@@ -13,4 +13,8 @@ export default {
   /* margin-top: 10px; */
   display: inline;
 }
+img{
+  width: 80%;
+  height: 80%;
+}
 </style>
